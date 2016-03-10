@@ -4,6 +4,8 @@
 // so that it can work inside soy compiled files.
 
 /* jshint ignore:start */
-goog.module('incrementaldom');
-Object.keys(IncrementalDOM).forEach(key => exports[key] = IncrementalDOM[key]);
+goog.loadModule(function() {
+	goog.module('incrementaldom');
+	return IncrementalDOM;
+});
 /* jshint ignore:end */
