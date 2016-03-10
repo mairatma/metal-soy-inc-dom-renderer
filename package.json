@@ -27,6 +27,7 @@
     "metal-soy-incremental-dom-bundle": "0.0.2"
   },
   "devDependencies": {
+    "babel-preset-metal": "github:metal/babel-preset-metal#closure",
     "gulp": "^3.8.11",
     "gulp-metal": "^0.14.0",
     "metal-karma-config": "^1.0.0"
