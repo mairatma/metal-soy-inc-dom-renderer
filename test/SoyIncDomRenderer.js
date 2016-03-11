@@ -3,10 +3,6 @@
 import HelloWorldComponent from './assets/HelloWorld.soy';
 import SoyIncDomRenderer from '../src/SoyIncDomRenderer';
 
-HelloWorldComponent.ATTRS = {
-	name: {}
-};
-
 describe('SoyIncDomRenderer', function() {
 	var comp;
 
@@ -20,6 +16,13 @@ describe('SoyIncDomRenderer', function() {
 		comp = new HelloWorldComponent().render();
 		assert.strictEqual('SPAN', comp.element.tagName);
 		assert.strictEqual('Hello World!', comp.element.textContent);
+	});
+
+	it('should add soy param as attributes automatically', function() {
+		comp = new HelloWorldComponent({
+			name: 'Foo'
+		}).render();
+		assert.strictEqual('Foo', comp.name);
 	});
 
 	it('should pass attribute values to "render template"', function() {
