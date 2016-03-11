@@ -12,24 +12,26 @@ describe('SoyIncDomRenderer', function() {
 		}
 	});
 
-	it('should render component\'s "render" template', function() {
-		comp = new HelloWorldComponent().render();
-		assert.strictEqual('SPAN', comp.element.tagName);
-		assert.strictEqual('Hello World!', comp.element.textContent);
-	});
+	describe('Rendering', function() {
+		it('should render component\'s "render" template', function() {
+			comp = new HelloWorldComponent().render();
+			assert.strictEqual('SPAN', comp.element.tagName);
+			assert.strictEqual('Hello World!', comp.element.textContent);
+		});
 
-	it('should add soy param as attributes automatically', function() {
-		comp = new HelloWorldComponent({
-			name: 'Foo'
-		}).render();
-		assert.strictEqual('Foo', comp.name);
-	});
+		it('should add soy param as attributes automatically', function() {
+			comp = new HelloWorldComponent({
+				name: 'Foo'
+			}).render();
+			assert.strictEqual('Foo', comp.name);
+		});
 
-	it('should pass attribute values to "render template"', function() {
-		comp = new HelloWorldComponent({
-			name: 'Foo'
-		}).render();
-		assert.strictEqual('SPAN', comp.element.tagName);
-		assert.strictEqual('Hello Foo!', comp.element.textContent);
+		it('should pass attribute values to "render template"', function() {
+			comp = new HelloWorldComponent({
+				name: 'Foo'
+			}).render();
+			assert.strictEqual('SPAN', comp.element.tagName);
+			assert.strictEqual('Hello Foo!', comp.element.textContent);
+		});
 	});
 });
