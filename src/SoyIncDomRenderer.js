@@ -1,6 +1,6 @@
 'use strict';
 
-import core from 'metal';
+import { core, object } from 'metal';
 import IncrementalDomRenderer from 'metal-incremental-dom';
 import { SoyAop, SoyTemplates } from 'metal-soy';
 
@@ -10,11 +10,11 @@ class SoyIncDomRenderer extends IncrementalDomRenderer {
 	 * @param {Array<string>} attrs
 	 * @protected
 	 */
-	addMissingAttrs_(attrs = []) {
+	addMissingAttrs_(attrs) {
 		if (this.addedMissingAttrs_) {
 			return;
 		}
-		
+
 		this.addedMissingAttrs_ = true;
 		var component = this.component_;
 		for (var i = 0; i < attrs.length; i++) {
@@ -55,6 +55,33 @@ class SoyIncDomRenderer extends IncrementalDomRenderer {
 	}
 
 	/**
+	 * Handles an intercepted soy template call. If the call is for a component's
+	 * main template, then it will be replaced to a call that incremental dom
+	 * will use for both handling an instance of that component and rendering it.
+	 * @param {string} componentName The name of the component that this template
+	 *     belongs to.
+	 * @param {string} templateName The name of this template.
+	 * @param {!function()} originalFn The original template function that was
+	 *     intercepted.
+	 * @param {Object} data The data the template was called with.
+	 * @param {*} opt_ignored
+	 * @param {Object} opt_ijData Template injected data object.
+	 * @protected
+	 */
+	handleInterceptedCall_(componentName, templateName, originalFn, opt_data, opt_ignored, opt_ijData) {
+		if (templateName === 'render') {
+			var args = [componentName, null, []];
+			var data = opt_data || {};
+			object.map(data, key => {
+				args.push(key, data[key]);
+			});
+			IncrementalDOM.elementVoid.apply(null, args);
+		} else {
+			originalFn(opt_data, opt_ignored, opt_ijData);
+		}
+	}
+
+	/**
 	 * Overrides the default method from `IncrementalDomRenderer` so the component's
 	 * soy template can be used for rendering.
 	 * @override
@@ -62,8 +89,14 @@ class SoyIncDomRenderer extends IncrementalDomRenderer {
 	renderIncDom() {
 		var elementTemplate = this.getTemplateFn_();
 		if (core.isFunction(elementTemplate)) {
-			this.addMissingAttrs_(SoyAop.getOriginalFn(elementTemplate).params);
+			elementTemplate = SoyAop.getOriginalFn(elementTemplate);
+			this.addMissingAttrs_(elementTemplate.params);
+
+			SoyAop.startInterception(this.handleInterceptedCall_.bind(this));
 			elementTemplate(this.buildTemplateData_());
+			SoyAop.stopInterception();
+		} else {
+			super.renderIncDom();
 		}
 	}
 }

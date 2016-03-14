@@ -5,5 +5,16 @@
  * @param? name
  */
 {template .render}
+  <span>
+    {call .content}
+      {param name: $name /}
+    {/call}
+  </span>
+{/template}
+
+/**
+ * @param? name
+ */
+{template .content}
   <span>Hello {$name ? $name : 'World'}!</span>
 {/template}
