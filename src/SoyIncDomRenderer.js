@@ -4,6 +4,9 @@ import { core, object } from 'metal';
 import IncrementalDomRenderer from 'metal-incremental-dom';
 import { SoyAop, SoyTemplates } from 'metal-soy';
 
+// The injected data that will be passed to soy templates.
+var ijData = {};
+
 class SoyIncDomRenderer extends IncrementalDomRenderer {
 	/**
 	 * Adds the specified attributes to the component, if they don't exist yet.
@@ -93,11 +96,19 @@ class SoyIncDomRenderer extends IncrementalDomRenderer {
 			this.addMissingAttrs_(elementTemplate.params);
 
 			SoyAop.startInterception(this.handleInterceptedCall_.bind(this));
-			elementTemplate(this.buildTemplateData_());
+			elementTemplate(this.buildTemplateData_(), null, ijData);
 			SoyAop.stopInterception();
 		} else {
 			super.renderIncDom();
 		}
+	}
+
+	/**
+	 * Sets the injected data object that should be passed to templates.
+	 * @param {Object} data
+	 */
+	static setInjectedData(data) {
+		ijData = data || {};
 	}
 }
 

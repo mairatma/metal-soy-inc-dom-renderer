@@ -2,6 +2,7 @@
 
 import { Component, ComponentCollector } from 'metal-component';
 import HelloWorldComponent from './assets/HelloWorld.soy';
+import IJDataComponent from './assets/IJData.soy';
 
 // For now we can't follow alphabetical order here, since HelloWorld.soy needs
 // to be imported before ExternalTemplate.soy, since ExternalTemplate depends
@@ -86,6 +87,22 @@ describe('SoyIncDomRenderer', function() {
 			comp = new ExternalTemplateComponent().render();
 			assert.strictEqual('DIV', comp.element.tagName);
 			assert.strictEqual('Hello External!', comp.element.textContent);
+		});
+
+		it('should allow specifying injected data content', function() {
+			SoyIncDomRenderer.setInjectedData({
+				content: 'Foo'
+			});
+			comp = new IJDataComponent().render();
+			assert.strictEqual('DIV', comp.element.tagName);
+			assert.strictEqual('Foo', comp.element.textContent);
+		});
+
+		it('should not throw error if setting injected data to null', function() {
+			SoyIncDomRenderer.setInjectedData(null);
+			comp = new IJDataComponent().render();
+			assert.strictEqual('DIV', comp.element.tagName);
+			assert.strictEqual('', comp.element.textContent);
 		});
 	});
 
