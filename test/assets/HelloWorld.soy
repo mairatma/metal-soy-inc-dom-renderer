@@ -5,7 +5,7 @@
  * @param? name
  */
 {template .render}
-  <span>
+  <span class="render">
     {call .content}
       {param name: $name /}
     {/call}
@@ -16,5 +16,5 @@
  * @param? name
  */
 {template .content}
-  <span>Hello {$name ? $name : 'World'}!</span>
+  <span class="content">Hello {$name ? $name : 'World'}!</span>
 {/template}

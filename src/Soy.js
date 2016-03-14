@@ -2,7 +2,7 @@
 
 import { core, object } from 'metal';
 import IncrementalDomRenderer from 'metal-incremental-dom';
-import { SoyAop, SoyTemplates } from 'metal-soy';
+import SoyAop from './SoyAop';
 
 // The injected data that will be passed to soy templates.
 var ijData = {};
@@ -49,39 +49,34 @@ class Soy extends IncrementalDomRenderer {
 	}
 
 	/**
-	 * Gets the soy template function for this component.
-	 * @return {function()}
-	 * @protected
-	 */
-	getTemplateFn_() {
-		return SoyTemplates.get(this.component_.getName(), 'render');
-	}
-
-	/**
 	 * Handles an intercepted soy template call. If the call is for a component's
-	 * main template, then it will be replaced to a call that incremental dom
-	 * will use for both handling an instance of that component and rendering it.
-	 * @param {string} componentName The name of the component that this template
-	 *     belongs to.
-	 * @param {string} templateName The name of this template.
+	 * main template, then it will be replaced with a call that incremental dom
+	 * can use for both handling an instance of that component and rendering it.
 	 * @param {!function()} originalFn The original template function that was
 	 *     intercepted.
 	 * @param {Object} data The data the template was called with.
-	 * @param {*} opt_ignored
-	 * @param {Object} opt_ijData Template injected data object.
 	 * @protected
 	 */
-	static handleInterceptedCall_(componentName, templateName, originalFn, opt_data, opt_ignored, opt_ijData) {
-		if (templateName === 'render') {
-			var args = [componentName, null, []];
-			var data = opt_data || {};
-			object.map(data, key => {
-				args.push(key, data[key]);
-			});
-			IncrementalDOM.elementVoid.apply(null, args);
-		} else {
-			originalFn(opt_data, opt_ignored, opt_ijData);
-		}
+	static handleInterceptedCall_(originalFn, opt_data) {
+		var ctor = originalFn.componentCtor;
+		var data = opt_data;
+		IncrementalDOM.elementVoid('Component', null, [], 'ctor', ctor, 'data', data);
+	}
+
+	/**
+	 * Registers the given templates to be used by `Soy` for the specified
+	 * component constructor.
+	 * @param {!Function} componentCtor The constructor of the component that
+	 *     should use the given templates.
+	 * @param {!Object} templates Object containing soy template functions.
+	 * @param {string=} mainTemplate The name of the main template that should be
+	 *     used to render the component. Defaults to "render".
+	 */
+	static register(componentCtor, templates, mainTemplate = 'render') {
+		componentCtor.RENDERER = Soy;
+		componentCtor.TEMPLATE = templates[mainTemplate];
+		templates[mainTemplate].componentCtor = componentCtor;
+		SoyAop.registerForInterception(templates, mainTemplate);
 	}
 
 	/**
@@ -90,7 +85,7 @@ class Soy extends IncrementalDomRenderer {
 	 * @override
 	 */
 	renderIncDom() {
-		var elementTemplate = this.getTemplateFn_();
+		var elementTemplate = this.component_.constructor.TEMPLATE;
 		if (core.isFunction(elementTemplate)) {
 			elementTemplate = SoyAop.getOriginalFn(elementTemplate);
 			this.addMissingAttrs_(elementTemplate.params);

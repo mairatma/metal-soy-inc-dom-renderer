@@ -2,19 +2,22 @@
 
 import dom from 'metal-dom';
 import { Component, ComponentCollector } from 'metal-component';
-import HelloWorldComponent from './assets/HelloWorld.soy';
-import IJDataComponent from './assets/IJData.soy';
-import EventsComponent from './assets/Events.soy';
+import {
+	HelloWorld as HelloWorldComponent,
+	templates as helloWorldTemplates
+} from './assets/HelloWorld.soy';
+import { IJData as IJDataComponent } from './assets/IJData.soy';
+import { Events as EventsComponent } from './assets/Events.soy';
 
 // For now we can't follow alphabetical order here, since HelloWorld.soy needs
 // to be imported before ExternalTemplate.soy, since ExternalTemplate depends
 // on it.
 // TODO: We should have a better dependency management for soy files so that
 // the order in which they're required doesn't matter.
-import ExternalTemplateComponent from './assets/ExternalTemplate.soy';
-import NestedComponent from './assets/Nested.soy';
-import NestedLevelsComponent from './assets/NestedLevels.soy';
-import NestedNoDataComponent from './assets/NestedNoData.soy';
+import { ExternalTemplate as ExternalTemplateComponent } from './assets/ExternalTemplate.soy';
+import { Nested as NestedComponent } from './assets/Nested.soy';
+import { NestedLevels as NestedLevelsComponent } from './assets/NestedLevels.soy';
+import { NestedNoData as NestedNoDataComponent } from './assets/NestedNoData.soy';
 import Soy from '../src/Soy';
 
 describe('Soy', function() {
@@ -31,6 +34,7 @@ describe('Soy', function() {
 		it('should render component\'s "render" template', function() {
 			comp = new HelloWorldComponent().render();
 			assert.strictEqual('SPAN', comp.element.tagName);
+			assert.ok(dom.hasClass(comp.element, 'render'));
 			assert.strictEqual('Hello World!', comp.element.textContent);
 		});
 
@@ -106,6 +110,16 @@ describe('Soy', function() {
 			comp = new IJDataComponent().render();
 			assert.strictEqual('DIV', comp.element.tagName);
 			assert.strictEqual('', comp.element.textContent);
+		});
+
+		it('should allow registering template with any name for a component', function() {
+			class TestComponent extends Component {}
+			Soy.register(TestComponent, helloWorldTemplates, 'content');
+
+			comp = new TestComponent().render();
+			assert.strictEqual('SPAN', comp.element.tagName);
+			assert.ok(dom.hasClass(comp.element, 'content'));
+			assert.strictEqual('Hello World!', comp.element.textContent);
 		});
 	});
 

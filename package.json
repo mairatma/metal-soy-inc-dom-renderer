@@ -8,7 +8,7 @@
     "node": ">=0.12.0",
     "npm": ">=3.0.0"
   },
-  "main": "src/SoyIncDomRenderer.js",
+  "main": "src/Soy.js",
   "files": [
     "src",
     "test"
@@ -24,7 +24,6 @@
     "metal": "metal/metal.js#master",
     "metal-component": "metal/metal-component#id",
     "metal-incremental-dom": "mairatma/metal-incremental-dom#master",
-    "metal-soy": "github:metal/metal-soy#master",
     "metal-soy-incremental-dom-bundle": "0.0.4"
   },
   "devDependencies": {
