@@ -7,7 +7,7 @@ import { SoyAop, SoyTemplates } from 'metal-soy';
 // The injected data that will be passed to soy templates.
 var ijData = {};
 
-class SoyIncDomRenderer extends IncrementalDomRenderer {
+class Soy extends IncrementalDomRenderer {
 	/**
 	 * Adds the specified attributes to the component, if they don't exist yet.
 	 * @param {Array<string>} attrs
@@ -112,4 +112,4 @@ class SoyIncDomRenderer extends IncrementalDomRenderer {
 	}
 }
 
-export default SoyIncDomRenderer;
+export default Soy;

@@ -12,9 +12,9 @@ import IJDataComponent from './assets/IJData.soy';
 import ExternalTemplateComponent from './assets/ExternalTemplate.soy';
 import NestedComponent from './assets/Nested.soy';
 import NestedNoDataComponent from './assets/NestedNoData.soy';
-import SoyIncDomRenderer from '../src/SoyIncDomRenderer';
+import Soy from '../src/Soy';
 
-describe('SoyIncDomRenderer', function() {
+describe('Soy', function() {
 	var comp;
 
 	afterEach(function() {
@@ -76,7 +76,7 @@ describe('SoyIncDomRenderer', function() {
 
 		it('should not throw error if component has no templates', function() {
 			class NoTemplateComponent extends Component {}
-			NoTemplateComponent.RENDERER = SoyIncDomRenderer;
+			NoTemplateComponent.RENDERER = Soy;
 
 			assert.doesNotThrow(function() {
 				comp = new NoTemplateComponent().render();
@@ -90,7 +90,7 @@ describe('SoyIncDomRenderer', function() {
 		});
 
 		it('should allow specifying injected data content', function() {
-			SoyIncDomRenderer.setInjectedData({
+			Soy.setInjectedData({
 				content: 'Foo'
 			});
 			comp = new IJDataComponent().render();
@@ -99,7 +99,7 @@ describe('SoyIncDomRenderer', function() {
 		});
 
 		it('should not throw error if setting injected data to null', function() {
-			SoyIncDomRenderer.setInjectedData(null);
+			Soy.setInjectedData(null);
 			comp = new IJDataComponent().render();
 			assert.strictEqual('DIV', comp.element.tagName);
 			assert.strictEqual('', comp.element.textContent);
