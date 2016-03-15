@@ -71,7 +71,7 @@ class Soy extends IncrementalDomRenderer {
 	 * @param {Object} opt_ijData Template injected data object.
 	 * @protected
 	 */
-	handleInterceptedCall_(componentName, templateName, originalFn, opt_data, opt_ignored, opt_ijData) {
+	static handleInterceptedCall_(componentName, templateName, originalFn, opt_data, opt_ignored, opt_ijData) {
 		if (templateName === 'render') {
 			var args = [componentName, null, []];
 			var data = opt_data || {};
@@ -95,7 +95,7 @@ class Soy extends IncrementalDomRenderer {
 			elementTemplate = SoyAop.getOriginalFn(elementTemplate);
 			this.addMissingAttrs_(elementTemplate.params);
 
-			SoyAop.startInterception(this.handleInterceptedCall_.bind(this));
+			SoyAop.startInterception(Soy.handleInterceptedCall_);
 			elementTemplate(this.buildTemplateData_(), null, ijData);
 			SoyAop.stopInterception();
 		} else {
