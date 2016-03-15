@@ -64,6 +64,23 @@ class Soy extends IncrementalDomRenderer {
 	}
 
 	/**
+	 * Overrides the original `IncrementalDomRenderer` method so that only
+	 * attributes used by the main template can cause updates.
+	 * @param {!Object} changes
+	 * @return {boolean}
+	 */
+	shouldUpdate(changes) {
+		var fn = this.component_.constructor.TEMPLATE;
+		var params = fn ? fn.params : [];
+		for (var i = 0; i < params.length; i++) {
+			if (changes[params[i]]) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
 	 * Registers the given templates to be used by `Soy` for the specified
 	 * component constructor.
 	 * @param {!Function} componentCtor The constructor of the component that

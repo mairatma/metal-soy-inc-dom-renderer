@@ -81,12 +81,44 @@ describe('Soy', function() {
 			});
 		});
 
-		it('should not throw error if component has no templates', function() {
+		it('should not trigger update when changed attribute is not used by template', function(done) {
+			comp = new HelloWorldComponent().render();
+			comp.addAttr('foo');
+			sinon.spy(IncrementalDOM, 'patchOuter');
+
+			comp.foo = 'Bar';
+			comp.once('attrsSynced', function() {
+				assert.strictEqual(0, IncrementalDOM.patchOuter.callCount);
+				IncrementalDOM.patchOuter.restore();
+				done();
+			});
+		});
+
+		it('should not throw error if rendering component with no templates', function() {
 			class NoTemplateComponent extends Component {}
 			NoTemplateComponent.RENDERER = Soy;
 
 			assert.doesNotThrow(function() {
 				comp = new NoTemplateComponent().render();
+			});
+		});
+
+		it('should not throw error if updating component with no templates', function(done) {
+			class NoTemplateComponent extends Component {}
+			NoTemplateComponent.ATTRS = {
+				foo: {
+				}
+			};
+			NoTemplateComponent.RENDERER = Soy;
+
+			comp = new NoTemplateComponent().render();
+			sinon.spy(IncrementalDOM, 'patchOuter');
+
+			comp.foo = 'Bar';
+			comp.once('attrsSynced', function() {
+				assert.strictEqual(0, IncrementalDOM.patchOuter.callCount);
+				IncrementalDOM.patchOuter.restore();
+				done();
 			});
 		});
 
