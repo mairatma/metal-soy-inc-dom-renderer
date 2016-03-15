@@ -11,6 +11,7 @@ import IJDataComponent from './assets/IJData.soy';
 // the order in which they're required doesn't matter.
 import ExternalTemplateComponent from './assets/ExternalTemplate.soy';
 import NestedComponent from './assets/Nested.soy';
+import NestedLevelsComponent from './assets/NestedLevels.soy';
 import NestedNoDataComponent from './assets/NestedNoData.soy';
 import Soy from '../src/Soy';
 
@@ -136,6 +137,21 @@ describe('Soy', function() {
 			assert.ok(nested instanceof HelloWorldComponent);
 			assert.strictEqual(nested.element, comp.element.childNodes[0]);
 			assert.strictEqual('Hello World!', nested.element.textContent);
+		});
+
+		it('should render and instantiate nested components inside nested components', function() {
+			comp = new NestedLevelsComponent({
+				name: 'Foo'
+			}).render();
+
+			var nested = comp.components.nested;
+			assert.ok(nested instanceof NestedComponent);
+			assert.strictEqual(nested.element, comp.element.childNodes[0]);
+
+			var nested2 = nested.components.hello;
+			assert.ok(nested2 instanceof HelloWorldComponent);
+			assert.strictEqual(nested2.element, nested.element.childNodes[0]);
+			assert.strictEqual('Hello Foo!', nested2.element.textContent);
 		});
 	});
 });
