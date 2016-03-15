@@ -25,7 +25,7 @@
     "metal-component": "metal/metal-component#id",
     "metal-incremental-dom": "mairatma/metal-incremental-dom#master",
     "metal-soy": "github:metal/metal-soy#master",
-    "metal-soy-incremental-dom-bundle": "0.0.2"
+    "metal-soy-incremental-dom-bundle": "0.0.4"
   },
   "devDependencies": {
     "gulp": "^3.8.11",
