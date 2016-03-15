@@ -1,8 +1,10 @@
 'use strict';
 
+import dom from 'metal-dom';
 import { Component, ComponentCollector } from 'metal-component';
 import HelloWorldComponent from './assets/HelloWorld.soy';
 import IJDataComponent from './assets/IJData.soy';
+import EventsComponent from './assets/Events.soy';
 
 // For now we can't follow alphabetical order here, since HelloWorld.soy needs
 // to be imported before ExternalTemplate.soy, since ExternalTemplate depends
@@ -104,6 +106,22 @@ describe('Soy', function() {
 			comp = new IJDataComponent().render();
 			assert.strictEqual('DIV', comp.element.tagName);
 			assert.strictEqual('', comp.element.textContent);
+		});
+	});
+
+	describe('Inline Events', function() {
+		beforeEach(function() {
+			EventsComponent.prototype.handleClick= sinon.stub();
+		});
+
+		it('should attach inline events found in component\'s soy template', function() {
+			comp = new EventsComponent().render();
+
+			dom.triggerEvent(comp.element, 'click');
+			assert.strictEqual(0, comp.handleClick.callCount);
+
+			dom.triggerEvent(comp.element.querySelector('button'), 'click');
+			assert.strictEqual(1, comp.handleClick.callCount);
 		});
 	});
 
