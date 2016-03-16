@@ -1,6 +1,6 @@
 'use strict';
 
-import { core, object } from 'metal';
+import core from 'metal';
 import IncrementalDomRenderer from 'metal-incremental-dom';
 import SoyAop from './SoyAop';
 
