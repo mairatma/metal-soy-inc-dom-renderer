@@ -17,6 +17,6 @@ metal.registerTasks(options);
 gulp.task('soy', function() {
 	return gulp.src('test/**/*.soy')
 		.pipe(compileSoy(options))
-		.pipe(replace('\'metal-soy-inc-dom-renderer\'', '\'../../src/Soy\''))
+		.pipe(replace('metal-soy-inc-dom-renderer', '../..'))
 		.pipe(gulp.dest('test'));
 });
