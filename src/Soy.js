@@ -1,6 +1,7 @@
 'use strict';
 
 import core from 'metal';
+import HTML2IncDom from 'html2incdom';
 import IncrementalDomRenderer from 'metal-incremental-dom';
 import SoyAop from './SoyAop';
 
@@ -41,9 +42,15 @@ class Soy extends IncrementalDomRenderer {
 		component.getAttrNames().forEach(name => {
 			// Get all attribute values except "element", since it helps performance
 			// and this attribute shouldn't be referenced inside a soy template anyway.
-			if (name !== 'element') {
-				data[name] = component[name];
+			if (name === 'element') {
+				return;
 			}
+
+			var value = component[name];
+			if (component.getAttrConfig(name).isHtml && core.isString(value)) {
+				value = HTML2IncDom.buildFn(value);
+			}
+			data[name] = value;
 		});
 		return data;
 	}

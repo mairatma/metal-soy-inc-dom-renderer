@@ -15,6 +15,7 @@ import { Events as EventsComponent } from './assets/Events.soy';
 // TODO: We should have a better dependency management for soy files so that
 // the order in which they're required doesn't matter.
 import { ExternalTemplate as ExternalTemplateComponent } from './assets/ExternalTemplate.soy';
+import { HtmlContent as HtmlContentComponent } from './assets/HtmlContent.soy';
 import { Nested as NestedComponent } from './assets/Nested.soy';
 import { NestedLevels as NestedLevelsComponent } from './assets/NestedLevels.soy';
 import { NestedNoData as NestedNoDataComponent } from './assets/NestedNoData.soy';
@@ -152,6 +153,25 @@ describe('Soy', function() {
 			assert.strictEqual('SPAN', comp.element.tagName);
 			assert.ok(dom.hasClass(comp.element, 'content'));
 			assert.strictEqual('Hello World!', comp.element.textContent);
+		});
+	});
+
+	describe('HTML attributes', function() {
+		before(function() {
+			HtmlContentComponent.ATTRS = {
+				content: {isHtml: true}
+			};
+		});
+
+		it('should render html string attributes correctly if isHtml is true', function() {
+			comp = new HtmlContentComponent({
+				content: '<span class="custom">HTML Content</span>'
+			}).render();
+
+			assert.strictEqual(1, comp.element.childNodes.length);
+			assert.strictEqual('SPAN', comp.element.childNodes[0].tagName);
+			assert.ok(dom.hasClass(comp.element.childNodes[0], 'custom'));
+			assert.strictEqual('HTML Content', comp.element.childNodes[0].textContent);
 		});
 	});
 
