@@ -1,6 +1,7 @@
 'use strict';
 
 import 'metal-soy-incremental-dom-bundle';
+import './requireWarning';
 
 import core from 'metal';
 import HTML2IncDom from 'html2incdom';
