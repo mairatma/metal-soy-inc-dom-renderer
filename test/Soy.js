@@ -2,10 +2,7 @@
 
 import dom from 'metal-dom';
 import { Component, ComponentCollector } from 'metal-component';
-import {
-	HelloWorld as HelloWorldComponent,
-	templates as helloWorldTemplates
-} from './assets/HelloWorld.soy';
+import { HelloWorld as HelloWorldComponent, templates as helloWorldTemplates } from './assets/HelloWorld.soy';
 import { IJData as IJDataComponent } from './assets/IJData.soy';
 import { Events as EventsComponent } from './assets/Events.soy';
 
@@ -96,7 +93,8 @@ describe('Soy', function() {
 		});
 
 		it('should not throw error if rendering component with no templates', function() {
-			class NoTemplateComponent extends Component {}
+			class NoTemplateComponent extends Component {
+			}
 			NoTemplateComponent.RENDERER = Soy;
 
 			assert.doesNotThrow(function() {
@@ -105,7 +103,8 @@ describe('Soy', function() {
 		});
 
 		it('should not throw error if updating component with no templates', function(done) {
-			class NoTemplateComponent extends Component {}
+			class NoTemplateComponent extends Component {
+			}
 			NoTemplateComponent.ATTRS = {
 				foo: {
 				}
@@ -146,7 +145,8 @@ describe('Soy', function() {
 		});
 
 		it('should allow registering template with any name for a component', function() {
-			class TestComponent extends Component {}
+			class TestComponent extends Component {
+			}
 			Soy.register(TestComponent, helloWorldTemplates, 'content');
 
 			comp = new TestComponent().render();
@@ -159,7 +159,9 @@ describe('Soy', function() {
 	describe('HTML attributes', function() {
 		before(function() {
 			HtmlContentComponent.ATTRS = {
-				content: {isHtml: true}
+				content: {
+					isHtml: true
+				}
 			};
 		});
 
@@ -177,7 +179,7 @@ describe('Soy', function() {
 
 	describe('Inline Events', function() {
 		beforeEach(function() {
-			EventsComponent.prototype.handleClick= sinon.stub();
+			EventsComponent.prototype.handleClick = sinon.stub();
 		});
 
 		it('should attach inline events found in component\'s soy template', function() {
