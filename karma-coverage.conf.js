@@ -12,4 +12,5 @@ module.exports = function (config) {
     'test/**/*.js'
   ];
   config.preprocessors['node_modules/html2incdom/src/*.js'] = ['babel', 'commonjs'];
+  config.preprocessors['node_modules/metal-soy-incremental-dom-bundle/build/bundle.js'] = ['commonjs'];
 };

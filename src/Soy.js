@@ -1,5 +1,7 @@
 'use strict';
 
+import 'metal-soy-incremental-dom-bundle';
+
 import core from 'metal';
 import HTML2IncDom from 'html2incdom';
 import IncrementalDomRenderer from 'metal-incremental-dom';
