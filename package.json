@@ -31,7 +31,7 @@
     "gulp": "^3.8.11",
     "gulp-metal": "^0.14.0",
     "gulp-replace": "^0.5.4",
-    "metal-karma-config": "^1.0.0",
+    "metal-karma-config": "metal/metal-karma-config#id",
     "metal-tools-soy": "metal/metal-tools-soy#id"
   }
 }
