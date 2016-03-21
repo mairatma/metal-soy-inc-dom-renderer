@@ -1,6 +1,6 @@
 'use strict';
 
-import 'metal-soy-incremental-dom-bundle';
+import 'metal-soy-bundle';
 import './requireWarning';
 
 import core from 'metal';

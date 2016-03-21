@@ -25,13 +25,13 @@
     "metal": "metal/metal.js#master",
     "metal-component": "metal/metal-component#id",
     "metal-incremental-dom": "mairatma/metal-incremental-dom#master",
-    "metal-soy-incremental-dom-bundle": "^0.1.0"
+    "metal-soy-bundle": "^0.1.1"
   },
   "devDependencies": {
     "gulp": "^3.8.11",
     "gulp-metal": "^0.14.0",
     "gulp-replace": "^0.5.4",
     "metal-karma-config": "^1.0.0",
-    "metal-tools-soy": "github:metal/metal-tools-soy#id"
+    "metal-tools-soy": "metal/metal-tools-soy#id"
   }
 }
