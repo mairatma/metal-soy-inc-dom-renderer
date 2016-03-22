@@ -36,7 +36,7 @@ describe('Soy', function() {
 			assert.strictEqual('Hello World!', comp.element.textContent);
 		});
 
-		it('should add soy param as attributes automatically', function() {
+		it('should add soy param as state keys automatically', function() {
 			comp = new HelloWorldComponent({
 				name: 'Foo'
 			});
@@ -46,20 +46,20 @@ describe('Soy', function() {
 			assert.strictEqual('Foo', comp.name);
 		});
 
-		it('should not add soy param as attr if attr already exists', function() {
+		it('should not add soy param as state key if it already exists', function() {
 			comp = new HelloWorldComponent({
 				name: 'Foo'
 			});
 			assert.ok(!comp.name);
 
-			comp.addAttr('name', {
+			comp.addToState('name', {
 				value: 'Bar'
 			});
 			comp.render();
 			assert.strictEqual('Bar', comp.name);
 		});
 
-		it('should pass attribute values to "render template"', function() {
+		it('should pass state values to "render template"', function() {
 			comp = new HelloWorldComponent({
 				name: 'Foo'
 			}).render();
@@ -67,25 +67,25 @@ describe('Soy', function() {
 			assert.strictEqual('Hello Foo!', comp.element.textContent);
 		});
 
-		it('should update content when attribute value changes', function(done) {
+		it('should update content when state values change', function(done) {
 			comp = new HelloWorldComponent({
 				name: 'Foo'
 			}).render();
 
 			comp.name = 'Bar';
-			comp.once('attrsSynced', function() {
+			comp.once('stateSynced', function() {
 				assert.strictEqual('Hello Bar!', comp.element.textContent);
 				done();
 			});
 		});
 
-		it('should not trigger update when changed attribute is not used by template', function(done) {
+		it('should not trigger update when changed state key is not used by template', function(done) {
 			comp = new HelloWorldComponent().render();
-			comp.addAttr('foo');
+			comp.addToState('foo');
 			sinon.spy(IncrementalDOM, 'patchOuter');
 
 			comp.foo = 'Bar';
-			comp.once('attrsSynced', function() {
+			comp.once('stateSynced', function() {
 				assert.strictEqual(0, IncrementalDOM.patchOuter.callCount);
 				IncrementalDOM.patchOuter.restore();
 				done();
@@ -105,7 +105,7 @@ describe('Soy', function() {
 		it('should not throw error if updating component with no templates', function(done) {
 			class NoTemplateComponent extends Component {
 			}
-			NoTemplateComponent.ATTRS = {
+			NoTemplateComponent.STATE = {
 				foo: {
 				}
 			};
@@ -115,7 +115,7 @@ describe('Soy', function() {
 			sinon.spy(IncrementalDOM, 'patchOuter');
 
 			comp.foo = 'Bar';
-			comp.once('attrsSynced', function() {
+			comp.once('stateSynced', function() {
 				assert.strictEqual(0, IncrementalDOM.patchOuter.callCount);
 				IncrementalDOM.patchOuter.restore();
 				done();
@@ -158,7 +158,7 @@ describe('Soy', function() {
 
 	describe('HTML attributes', function() {
 		before(function() {
-			HtmlContentComponent.ATTRS = {
+			HtmlContentComponent.STATE = {
 				content: {
 					isHtml: true
 				}

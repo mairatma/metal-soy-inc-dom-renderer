@@ -13,26 +13,26 @@ var ijData = {};
 
 class Soy extends IncrementalDomRenderer {
 	/**
-	 * Adds the specified attributes to the component, if they don't exist yet.
-	 * @param {Array<string>} attrs
+	 * Adds the specified state keys to the component, if they don't exist yet.
+	 * @param {Array<string>} keys
 	 * @protected
 	 */
-	addMissingAttrs_(attrs) {
-		if (this.addedMissingAttrs_) {
+	addMissingStateKeys_(keys) {
+		if (this.addedMissingStateKeys_) {
 			return;
 		}
 
-		this.addedMissingAttrs_ = true;
+		this.addedMissingStateKeys_ = true;
 		var component = this.component_;
-		for (var i = 0; i < attrs.length; i++) {
-			if (!component.getAttrConfig(attrs[i])) {
-				component.addAttr(attrs[i], {}, component.getInitialConfig()[attrs[i]]);
+		for (var i = 0; i < keys.length; i++) {
+			if (!component.getStateKeyConfig(keys[i])) {
+				component.addToState(keys[i], {}, component.getInitialConfig()[keys[i]]);
 			}
 		}
 	}
 
 	/**
-	 * Copies the component's attributes to an object so it can be passed as it's
+	 * Copies the component's state to an object so it can be passed as it's
 	 * template call's data. The copying needs to be done because, if the component
 	 * itself is passed directly, some problems occur when soy tries to merge it
 	 * with other data, due to property getters and setters. This is safer.
@@ -42,18 +42,18 @@ class Soy extends IncrementalDomRenderer {
 	buildTemplateData_() {
 		var component = this.component_;
 		var data = {};
-		component.getAttrNames().forEach(name => {
-			// Get all attribute values except "element", since it helps performance
-			// and this attribute shouldn't be referenced inside a soy template anyway.
-			if (name === 'element') {
+		component.getStateKeys().forEach(key => {
+			// Get all state values except "element", since it helps performance
+			// and the element shouldn't be referenced inside a soy template anyway.
+			if (key === 'element') {
 				return;
 			}
 
-			var value = component[name];
-			if (component.getAttrConfig(name).isHtml && core.isString(value)) {
+			var value = component[key];
+			if (component.getStateKeyConfig(key).isHtml && core.isString(value)) {
 				value = HTML2IncDom.buildFn(value);
 			}
-			data[name] = value;
+			data[key] = value;
 		});
 		return data;
 	}
@@ -75,7 +75,7 @@ class Soy extends IncrementalDomRenderer {
 
 	/**
 	 * Overrides the original `IncrementalDomRenderer` method so that only
-	 * attributes used by the main template can cause updates.
+	 * state keys used by the main template can cause updates.
 	 * @param {!Object} changes
 	 * @return {boolean}
 	 */
@@ -115,7 +115,7 @@ class Soy extends IncrementalDomRenderer {
 		var elementTemplate = this.component_.constructor.TEMPLATE;
 		if (core.isFunction(elementTemplate)) {
 			elementTemplate = SoyAop.getOriginalFn(elementTemplate);
-			this.addMissingAttrs_(elementTemplate.params);
+			this.addMissingStateKeys_(elementTemplate.params);
 
 			SoyAop.startInterception(Soy.handleInterceptedCall_);
 			elementTemplate(this.buildTemplateData_(), null, ijData);
